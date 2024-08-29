@@ -39,7 +39,6 @@ public class CalcController {
      */
     @PostMapping("/electricity")
     public ResponseEntity<Electricity> electricityEmission(@RequestBody Electricity electricity) {
-
         double emissionFactor = 0.92;  // The emission factor in kg CO2e per kWh
 
         // Emission = kwh * emissionFactor;
@@ -95,7 +94,7 @@ public class CalcController {
      * @param fuel The fuel details, including LPG and firewood usage.
      * @return A ResponseEntity containing the fuel details with calculated emissions.
      */
-    @PostMapping("/fuel")
+    @PostMapping("/fuel_sources")
     public ResponseEntity<FuelSources> fuelEmission(@RequestBody FuelSources fuel) {
 
         double lpgEmissionFactor = 2.98;  // Emission factor for LPG in kg CO2e per liter
@@ -114,7 +113,7 @@ public class CalcController {
      * @param diet The dietary habits, including meat, dairy, and other food consumption.
      * @return A ResponseEntity containing the dietary habits with calculated emissions.
      */
-    @PostMapping("/diet")
+    @PostMapping("/dietary_habits")
     public ResponseEntity<DietaryHabits> dietEmission(@RequestBody DietaryHabits diet) {
 
         final double MEAT_EMISSION_FACTOR = 27.0;  // kg CO2e per kg of meat
@@ -122,8 +121,8 @@ public class CalcController {
         final double OTHER_EMISSION_FACTOR = 2.0;  // kg CO2e per kg of other food
 
         double meatEmissions = diet.getMeat_consumption() * MEAT_EMISSION_FACTOR;
-        double dairyEmissions = diet.getDairy_cosumption() * DAIRY_EMISSION_FACTOR;
-        double otherEmissions = diet.getOther_consumpotion() * OTHER_EMISSION_FACTOR;
+        double dairyEmissions = diet.getDairy_consumption() * DAIRY_EMISSION_FACTOR;
+        double otherEmissions = diet.getOther_consumption() * OTHER_EMISSION_FACTOR;
         diet.setEmission(meatEmissions + dairyEmissions + otherEmissions);
         return ResponseEntity.ok().body(diet);
     }
