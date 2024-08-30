@@ -31,6 +31,12 @@ public class CalcController {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    //for gateway testing
+    @GetMapping
+    public String test() {
+        return "Calculation Service is up and running";
+    }
     
     /**
      * Calculates the carbon emissions from electricity usage.

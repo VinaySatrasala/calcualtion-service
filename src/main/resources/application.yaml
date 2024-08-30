@@ -10,14 +10,14 @@ server:
 
  
 
-#    
-#eureka:
-#  client:
-#  #to regsiter this service Service Discovery
-#    registerWithEureka: true
-#    fetchRegistry: true
-#    serviceUrl:
-#      defaultZone: http://localhost:8761/eureka/
-#  instance:
-#    hostname: localhost
+
+eureka:
+  client:
+  #to regsiter this service Service Discovery
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    hostname: localhost
     
