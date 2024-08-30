@@ -1,7 +1,10 @@
 package com.captsone.calcualtion_service.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +19,6 @@ import com.captsone.calcualtion_service.model.PrivateTransport;
 import com.captsone.calcualtion_service.model.PublicTransport;
 import com.captsone.calcualtion_service.model.Waste;
 import com.captsone.calcualtion_service.model.Water;
-
-import java.util.Map;
 
 /**
  * CalcController handles API requests related to the calculation of carbon emissions
@@ -153,9 +154,11 @@ public class CalcController {
         }
 
         if(map.containsKey("bus")){
-            double kmTravelled = (double) map.get("bus");
+        	
+            double kmTravelled = (double) map.get("bus");      
             pt.setBus_km(kmTravelled);
             emission += kmTravelled * BUS_EMISSION_FACTOR;
+            
         }
 
         if(map.containsKey("train")){
@@ -163,8 +166,32 @@ public class CalcController {
             pt.setTrain_km(kmTravelled);
             emission += kmTravelled * TRAIN_EMISSION_FACTOR;
         }
-
-        pt.setEmission(emission);
+        
+        if(map.containsKey("bus_km")&&!map.containsKey("bus")) {
+        	 double kmTravelled = (double) map.get("bus_km");      
+             pt.setBus_km(kmTravelled);
+             emission += kmTravelled * BUS_EMISSION_FACTOR;
+        }
+        if(map.containsKey("train_km")&&!map.containsKey("train")) {
+        	double kmTravelled = (double) map.get("train_km");
+            pt.setTrain_km(kmTravelled);
+            emission += kmTravelled * TRAIN_EMISSION_FACTOR;
+        	
+        }
+        if(map.containsKey("flight_km")&&!map.containsKey("flight")) {
+        	double kmTravelled = (double) map.get("flight_km");
+        	pt.setFlight_km(kmTravelled);
+        	double previousEmission = (double) map.get("emission");
+        	previousEmission-=(double) map.get("train_km")*TRAIN_EMISSION_FACTOR;
+        	previousEmission-=(double) map.get("bus_km")*BUS_EMISSION_FACTOR;
+        	emission+=previousEmission;
+        	
+        }     
+       
+        if(emission<0.0)
+        	pt.setEmission(0.0);
+        else
+        	pt.setEmission(emission);
 
         return ResponseEntity.ok().body(pt);
     }
@@ -176,30 +203,35 @@ public class CalcController {
      * @return A ResponseEntity containing the private transport details with calculated emissions.
      */
     @PostMapping("/private_transport")
-    public ResponseEntity<PrivateTransport> privateTransportEmission(@RequestBody Map<String,Object> map) {
-
-        String fuel_type = map.get("fuel_type").toString();
-        double vehicla_efficiency = (double) map.get("efficiency");
-        double distance_travelled = (double) map.get("travelled"); 
-
-        double emissionFactor;
-        switch (fuel_type) {
-            case "Diesel":
-                emissionFactor = 2.68;  // kg CO2e per liter for Diesel
-                break;
-            case "Natural Gas":
-                emissionFactor = 1.93;  // kg CO2e per liter for Natural Gas
-                break;
-            default:
-                emissionFactor = 2.31;  // kg CO2e per liter for Petrol
-                break;
-        }
-        double emission = (distance_travelled / vehicla_efficiency) * emissionFactor;
-
-        PrivateTransport pt = new PrivateTransport();
-        pt.setDistance(distance_travelled);
-        pt.setEmission(emission);
-
-        return ResponseEntity.ok().body(pt);
+    public ResponseEntity<?> privateTransportEmission(@RequestBody Map<String,Object> map) {
+    	if(map.containsKey("fuel_type")&&map.containsKey("efficiency")&&map.containsKey("travelled")){
+	        String fuel_type = map.get("fuel_type").toString();
+	        double vehicla_efficiency = (double) map.get("efficiency");
+	        double distance_travelled = (double) map.get("travelled"); 
+	
+	        double emissionFactor;
+	        switch (fuel_type) {
+	            case "Diesel":
+	                emissionFactor = 2.68;  // kg CO2e per liter for Diesel
+	                break;
+	            case "Natural Gas":
+	                emissionFactor = 1.93;  // kg CO2e per liter for Natural Gas
+	                break;
+	            default:
+	                emissionFactor = 2.31;  // kg CO2e per liter for Petrol
+	                break;
+	        }
+	        double emission = (distance_travelled / vehicla_efficiency) * emissionFactor;
+	
+	        PrivateTransport pt = new PrivateTransport();
+	        pt.setDistance(distance_travelled);
+	        pt.setEmission(emission);
+	
+	        return ResponseEntity.ok().body(pt);
+    	}
+    	return ResponseEntity.ok().body(map);
+		
     }
+    
+    
 }

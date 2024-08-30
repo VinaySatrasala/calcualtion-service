@@ -1,0 +1,23 @@
+spring:
+  application:
+   name: calculation-service
+  data:
+   mongodb:
+    uri: mongodb+srv://shahad7:qahe7LhbAc84JQfs@cluster0.ytovchg.mongodb.net/capstone?retryWrites=true&w=majority&appName=Cluster0
+   
+server:
+ port: 5002
+
+ 
+
+#    
+#eureka:
+#  client:
+#  #to regsiter this service Service Discovery
+#    registerWithEureka: true
+#    fetchRegistry: true
+#    serviceUrl:
+#      defaultZone: http://localhost:8761/eureka/
+#  instance:
+#    hostname: localhost
+    
