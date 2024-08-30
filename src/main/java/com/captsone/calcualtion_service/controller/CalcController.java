@@ -166,32 +166,8 @@ public class CalcController {
             pt.setTrain_km(kmTravelled);
             emission += kmTravelled * TRAIN_EMISSION_FACTOR;
         }
-        
-        if(map.containsKey("bus_km")&&!map.containsKey("bus")) {
-        	 double kmTravelled = (double) map.get("bus_km");      
-             pt.setBus_km(kmTravelled);
-             emission += kmTravelled * BUS_EMISSION_FACTOR;
-        }
-        if(map.containsKey("train_km")&&!map.containsKey("train")) {
-        	double kmTravelled = (double) map.get("train_km");
-            pt.setTrain_km(kmTravelled);
-            emission += kmTravelled * TRAIN_EMISSION_FACTOR;
-        	
-        }
-        if(map.containsKey("flight_km")&&!map.containsKey("flight")) {
-        	double kmTravelled = (double) map.get("flight_km");
-        	pt.setFlight_km(kmTravelled);
-        	double previousEmission = (double) map.get("emission");
-        	previousEmission-=(double) map.get("train_km")*TRAIN_EMISSION_FACTOR;
-        	previousEmission-=(double) map.get("bus_km")*BUS_EMISSION_FACTOR;
-        	emission+=previousEmission;
-        	
-        }     
-       
-        if(emission<0.0)
-        	pt.setEmission(0.0);
-        else
-        	pt.setEmission(emission);
+
+        pt.setEmission(emission);
 
         return ResponseEntity.ok().body(pt);
     }
@@ -204,7 +180,6 @@ public class CalcController {
      */
     @PostMapping("/private_transport")
     public ResponseEntity<?> privateTransportEmission(@RequestBody Map<String,Object> map) {
-    	if(map.containsKey("fuel_type")&&map.containsKey("efficiency")&&map.containsKey("travelled")){
 	        String fuel_type = map.get("fuel_type").toString();
 	        double vehicla_efficiency = (double) map.get("efficiency");
 	        double distance_travelled = (double) map.get("travelled"); 
@@ -228,8 +203,7 @@ public class CalcController {
 	        pt.setEmission(emission);
 	
 	        return ResponseEntity.ok().body(pt);
-    	}
-    	return ResponseEntity.ok().body(map);
+
 		
     }
     
