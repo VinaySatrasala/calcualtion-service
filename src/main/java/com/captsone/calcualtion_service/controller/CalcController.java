@@ -161,14 +161,14 @@ public class CalcController {
 
         if(map.containsKey("bus")){
         	
-            double kmTravelled = (double) map.get("bus");      
+            double kmTravelled = Double.parseDouble(map.get("bus").toString());      
             pt.setBus_km(kmTravelled);
             emission += kmTravelled * BUS_EMISSION_FACTOR;
             
         }
 
         if(map.containsKey("train")){
-            double kmTravelled = (double) map.get("train");
+            double kmTravelled = Double.parseDouble(map.get("train").toString());
             pt.setTrain_km(kmTravelled);
             emission += kmTravelled * TRAIN_EMISSION_FACTOR;
         }
@@ -187,8 +187,8 @@ public class CalcController {
     @PostMapping("/private_transport")
     public ResponseEntity<?> privateTransportEmission(@RequestBody Map<String,Object> map) {
 	        String fuel_type = map.get("fuel_type").toString();
-	        double vehicla_efficiency = (double) map.get("efficiency");
-	        double distance_travelled = (double) map.get("travelled"); 
+	        double vehicla_efficiency = Double.parseDouble(map.get("efficiency").toString()) ;
+	        double distance_travelled = Double.parseDouble(map.get("travelled").toString()) ; 
 	
 	        double emissionFactor;
 	        switch (fuel_type) {
